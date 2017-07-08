@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace pocketmine\level\generator;
 
+use pocketmine\level\ChunkManager;
 use pocketmine\level\format\Chunk;
 use pocketmine\level\Level;
 use pocketmine\level\light\ChunkLightPopulator;
@@ -43,12 +44,15 @@ class LightPopulationTask extends AsyncTask{
 		/** @var Chunk $chunk */
 		$chunk = Chunk::fastDeserialize($this->chunk);
 
+		/** @var ChunkManager $manager */
 		$manager = $this->getFromThreadStore("generation.level{$this->levelId}.manager");
 
 		if($chunk === null or $manager === null){
 			//TODO error
 			return;
 		}
+
+		$manager->setChunk($chunk->getX(), $chunk->getZ(), $chunk);
 
 		$chunk->recalculateHeightMap();
 
